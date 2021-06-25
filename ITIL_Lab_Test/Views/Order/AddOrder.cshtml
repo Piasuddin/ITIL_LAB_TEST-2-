@@ -1,0 +1,315 @@
+﻿@model ITIL_Lab_Test.ViewModels.OrderCreateViewModel
+
+@{
+    ViewData["Title"] = "AddOrder";
+}
+
+<div class="row d-flex justify-content-center">
+    <div class="col-md-12" style="max-width: 800px">
+        <div class="d-flex justify-content-center page-header  mb-2">
+            <span>Purchase Order Entry Form</span>
+        </div>
+        <hr />
+        <form asp-action="AddOrder" class="row" id="form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id" hidden />
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label asp-for="RefId" class="col-form-label col-form-label-sm col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <input asp-for="RefId" class="form-control form-control-sm" />
+                        <span asp-validation-for="RefId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label asp-for="PoNo" class="col-form-label col-form-label-sm col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <input asp-for="PoNo" class="form-control form-control-sm" />
+                        <span asp-validation-for="PoNo" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label asp-for="PoDate" class="col-form-label col-form-label-sm col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <input asp-for="PoDate" class="form-control form-control-sm" />
+                        <span asp-validation-for="PoDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label asp-for="SupplierId" class="col-form-label col-form-label-sm col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <select id="comments" asp-for="SupplierId" asp-items="Model.Suppliers"
+                                class="form-control form-control-sm">
+                            <option value="">Select Supplier</option>
+                        </select>
+                        <span asp-validation-for="SupplierId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label asp-for="ExpectedDate" class="col-form-label col-form-label-sm col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <input asp-for="ExpectedDate" class="form-control form-control-sm" />
+                        <span asp-validation-for="ExpectedDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group row">
+                    <label asp-for="Remark" class="col-form-label col-form-label-sm col-sm-4"></label>
+                    <div class="col-sm-8">
+                        <input asp-for="Remark" class="form-control form-control-sm" />
+                        <span asp-validation-for="Remark" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12" style="">
+                <hr />
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group row">
+                            <label asp-for="Item" class="col-form-label col-form-label-sm col-sm-3"></label>
+                            <input hidden id="txtAllowSearchID" />
+                            <div class="col-sm-9">
+                                <input asp-for="Item" id="searchProductInput" class="form-control form-control-sm" />
+                                <span asp-validation-for="Item" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group row">
+                            <label asp-for="Qty" class="col-form-label col-form-label-sm col-sm-3"></label>
+                            <div class="col-sm-9">
+                                <input asp-for="Qty" id="qty" class="form-control form-control-sm" />
+                                <span asp-validation-for="Qty" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group row">
+                            <label asp-for="Rate" class="col-form-label col-form-label-sm col-sm-3"></label>
+                            <div class="col-sm-9">
+                                <input asp-for="Rate" readonly placeholder="$" id="rate" class="form-control text-center form-control-sm" />
+                                <span asp-validation-for="Rate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group row d-flex justify-content-end">
+                            <button type="button" id="addLineItemBtn" class="plus-btn none-bc-btn">
+                                <i class="fas fa-plus-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <table class="table table-sm table-bordered" id="orderDetailsTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("ITEM NAME")
+                            </th>
+                            <th>
+                                @Html.DisplayName("QTY")
+                            </th>
+                            <th>
+                                @Html.DisplayName("RATE")
+                            </th>
+                            <th>
+                                @Html.DisplayName("EDIT")
+                            </th>
+                            <th>
+                                @Html.DisplayName("DELETE")
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.OrderDetails.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.HiddenFor(model => Model.OrderDetails[i].Id)
+                                    @Html.HiddenFor(model => Model.OrderDetails[i].ProductId)
+                                    @Html.HiddenFor(model => Model.OrderDetails[i].ProductName)
+                                    @Html.DisplayFor(modelItem => Model.OrderDetails[i].ProductName)
+                                </td>
+                                <td class="text-right">
+                                    @Html.HiddenFor(model => Model.OrderDetails[i].Qty)
+                                    @Html.DisplayFor(modelItem => Model.OrderDetails[i].Qty)
+                                </td>
+                                <td class="text-right">
+                                    @Html.HiddenFor(model => Model.OrderDetails[i].Rate)
+                                    @Html.DisplayFor(modelItem => Model.OrderDetails[i].Rate)
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="none-bc-btn" onclick="edit(@i)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="none-bc-btn text-danger" onclick="deleteTableRow(@i)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-12 d-flex justify-content-end">
+                <a asp-action="index" asp-controller="order" id="submit" class="btn btn-info float-right mr-2 btn-sm">Cancel</a>
+                <input type="submit" id="submit" value="@(Model.Id > 0? "Update": "Create")" class="btn btn-primary float-right btn-sm" />
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var editedIndex = -1;
+        var allProducts = [];
+        function validateDetailsForm() {
+            const qty = $("#qty").val();
+            const rate = $("#rate").val();
+            const searchProductInput = $("#searchProductInput").val();
+            console.log(searchProductInput);
+            if (qty && rate && searchProductInput) {
+                return true;
+            } else {
+                alert("Please fill all the field");
+                return false;
+            }
+        }
+        $(document).ready(() => {
+
+            $("#form").submit(function (e) {
+                return true;
+            });
+            var availableTags = [];
+            $("#addLineItemBtn").click(() => {
+                if (validateDetailsForm()) {
+                    const selectedProductId = $("#txtAllowSearchID").val();
+                    console.log(selectedProductId);
+                    const selectedProduct = allProducts.filter(e => e.id == selectedProductId)[0];
+                    if (selectedProduct) {
+                        let productId = selectedProduct.name;
+                        let qty = +$("#qty").val();
+                        let rate = selectedProduct.rate;
+
+                        //get all table rowcount
+                        var allTr = $("#orderDetailsTable tr");
+                        const index = allTr.length - 1;
+                        //update record
+                        if (editedIndex > -1) {
+                            let celles = getTableCells(editedIndex - 1, selectedProduct, qty, rate);
+                            let tableRowToUpdate = allTr[editedIndex];
+                            tableRowToUpdate.innerHTML = "";
+                            tableRowToUpdate.innerHTML = celles;
+                            editedIndex = -1;
+                        }
+                        //add record
+                        else {
+                            let celles = getTableCells(index, selectedProduct, qty, rate);
+                            $("#orderDetailsTable").append("<tr>" + celles + "</tr>");
+                        }
+                        $("#qty").val("");
+                        $("#searchProductInput").val("");
+                        $("#rate").val("");
+                    } else {
+                        alert("Not found a product. Please select a product");
+                    }
+                }
+            })
+            $('#searchProductInput').on('input', () => {
+                setUpAutoComplete();
+            })
+            console.log("searchProductInput")
+        })
+
+        function setUpAutoComplete() {
+            let text = $('#searchProductInput').val();
+            $.getJSON("/Product/search?key=" + text, (res) => {
+                allProducts = [];
+                availableTags = [];
+                allProducts = res;
+                availableTags = res.map(e => { return { value: e.id, label: e.name } });
+                console.log(res);
+                $("#searchProductInput").autocomplete({
+                    source: availableTags,
+                    change: function (event, ui) {
+                    },
+                    select: function (event, ui) {
+                        setTimeout(e => {
+                            $("#searchProductInput").val(ui.item.label);
+                            $("#txtAllowSearchID").val(ui.item.value);
+                            let item = allProducts.filter(e => e.id == ui.item.value)[0];
+                            $("#rate").val(item.rate);
+                        })
+                    }
+                })
+            });
+        }
+
+        function getTableCells(index, selectedProduct, qty, rate) {
+            const idField = $("#OrderDetails_" + index + "__Id").val();
+            let idInputField = "";
+            if (idField && +idField > 0) {
+                idInputField = "<input hidden id='OrderDetails_" + index
+                    + "__Id' name ='OrderDetails[" + index + "].Id' value='"
+                    + idField + "'/>"
+            }
+            const productNameCell = '<td>' + "<input hidden id='OrderDetails_" + index
+                + "__ProductId' name ='OrderDetails[" + index + "].ProductId' value='"
+                + selectedProduct.id + "'/>" + "<input hidden id='OrderDetails_" + index
+                + "__ProductName' name ='OrderDetails[" + index + "].ProductName' value='"
+                + selectedProduct.name + "'/>" + idInputField + selectedProduct.name + '</td>';
+            const qtyCell = '<td class="text-right">' + "<input hidden id='OrderDetails_" + index + "__Qty' name ='OrderDetails[" + index + "].qty' value='" + qty + "'/>" + qty.toFixed(2) + '</td>';
+            const rateCell = '<td class="text-right">' + "<input hidden id='OrderDetails_" + index + "__Rate' name ='OrderDetails[" + index + "].rate' value='" + rate + "'/>" + rate.toFixed(2) + '</td>';
+            const editButtonCell = '<td class="text-center"><button type="button" class="none-bc-btn" onclick="edit(' + index + ')"><i class="far fa-edit"></i></button></td>';
+            const deleteButtonCell = '<td class="text-center"><button type="button" class="none-bc-btn text-danger" onclick="deleteTableRow(' + index + ')"> <i class="far fa-trash-alt"></i></button></td>';
+            const tableCells = productNameCell + qtyCell + rateCell + editButtonCell + deleteButtonCell;
+            return tableCells;
+        }
+        function edit(index) {
+            const qty = $("#OrderDetails_" + index + "__Qty").val();
+            const rate = $("#OrderDetails_" + index + "__Rate").val();
+            const productId = $("#OrderDetails_" + index + "__ProductId").val();
+            const productName = $("#OrderDetails_" + index + "__ProductName").val();
+
+            //set value
+            $("#qty").val(qty);
+            $("#rate").val(rate);
+            $("#searchProductInput").val(productName);
+            $("#txtAllowSearchID").val(productId);
+            editedIndex = index + 1;
+
+            //initialize autocomplete
+            setUpAutoComplete();
+        }
+        function deleteTableRow(index) {
+            document.getElementById("orderDetailsTable").deleteRow(index + 1);
+            var allTr = $("#orderDetailsTable tr");
+            for (let i = index + 1; i < allTr.length; i++) {
+                const productId = $("#OrderDetails_" + i + "__ProductId").val();
+                const qty = +$("#OrderDetails_" + i + "__Qty").val();
+                const selectedProduct = allProducts.filter(e => e.id == productId)[0];
+                console.log(productId);
+                console.log(selectedProduct);
+                let celles = getTableCells(i - 1, selectedProduct, qty, selectedProduct.rate);
+                let tableRowToUpdate = allTr[i];
+                tableRowToUpdate.innerHTML = "";
+                tableRowToUpdate.innerHTML = celles;
+            }
+        }
+    </script>
+}

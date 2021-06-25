@@ -1,0 +1,141 @@
+﻿@model IEnumerable<OrderTableDataViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-center page-header  mb-3">
+    <span>Ordered List</span>
+</div>
+<div class="row" style="position:relative">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert app-notification-bar alert-success alert-dismissible" role="alert">
+            <strong>@TempData["Success"]</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+</div>
+<div class="mb-3 row">
+    <div class="col-sm-6">
+        <a asp-action="AddOrder" class="btn btn-sm btn-outline-primary ">Add New Order</a>
+    </div>
+    <div class="col-sm-6">
+        <form method="get" class="float-right" asp-action="index">
+            <div class="input-group">
+                <input type="text" name="searchKey" style="max-width:200px" value="@ViewBag.searchKey" 
+                       class="form-control form-control-sm float-right" placeholder="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sm btn-outline-secondary" type="submit">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RefId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PoNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PoDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supplier)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedDate)
+            </th>
+            <th>
+                @Html.DisplayName("EDIT")
+            </th>
+            <th>
+                @Html.DisplayName("DELETE")
+            </th>
+            <th>
+                @Html.DisplayName("EXPORT")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.RefId)
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.PoNo)
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.PoDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier)
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.ExpectedDate)
+                </td>
+                <td class="text-center">
+                    <a asp-controller="order" class="text-dark" asp-action="update" asp-route-id="@item.Id">
+                        <i class="far fa-edit"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a asp-controller="order" class="text-danger" asp-action="delete" asp-route-id="@item.Id">
+                        <i class="far fa-trash-alt"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a asp-controller="order" asp-action="PrintReport" class="text-info" asp-route-id="@item.Id">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="row d-flex justify-content-center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item  @(ViewBag.page == 1? "disabled": "")">
+                <a class="page-link pagination-link" asp-controller="order"
+                           asp-action="index" asp-route-data="1">
+                    <i class="far fa-arrow-alt-circle-left"></i>
+                </a>
+            </li>
+            @{
+                var totalPage = ViewBag.tatalPage;
+                for (int i = 0; i < totalPage; i++)
+                {
+                    var index = i + 1;
+                    <li class="page-item">
+                        <a asp-controller="order"
+                           asp-action="index" asp-route-data="@index"
+                           class="page-link pagination-link page_@index @(ViewBag.page == index? "pagination-link-active": "")">@index  </a>
+                    </li>
+                }
+            }
+            <li class="page-item @(ViewBag.page == ViewBag.tatalPage? "disabled": "")">
+                <a class="page-link pagination-link" asp-controller="order"
+                           asp-action="index" asp-route-data="@ViewBag.tatalPage">
+                    <i class="far fa-arrow-alt-circle-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+        })
+    </script>
+}
